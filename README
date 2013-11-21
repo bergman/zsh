@@ -1,0 +1,5 @@
+# clone into ~/.zsh
+# sh README
+cd
+ln -s .zsh/zshrc .zshrc
+ln -s .zsh/zshenv .zshenv
