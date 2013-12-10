@@ -8,7 +8,7 @@ fi
 fpath=("~/.zsh/completions/src" $fpath)
 
 # Load and initialize the completion system ignoring insecure directories.
-autoload -Uz compinit && compinit -i
+autoload -Uz compinit && compinit
 
 #
 # Options
@@ -67,7 +67,7 @@ zstyle ':completion:*:history-words' list false
 zstyle ':completion:*:history-words' menu yes
 
 # Environmental Variables
-zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+#zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
 # Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(
@@ -127,6 +127,9 @@ export GREP_COLOR='37;45'
 export GREP_OPTIONS='--color=auto'
 # }}}
 
+# zmv, rename files
+autoload -U zmv
+
 # no delay when pressing ESC
 KEYTIMEOUT=1
 
@@ -137,10 +140,9 @@ zle -N history-beginning-search-forward-end history-search-end
 # vim style keybindings
 bindkey -v
 
-# pil upp
-#bindkey '\e[A' history-beginning-search-backward-end
-# pil ned
-#bindkey '\e[B' history-beginning-search-forward-end
+# pil upp, ned
+bindkey '\e[A' history-beginning-search-backward-end
+bindkey '\e[B' history-beginning-search-forward-end
 
 # vim style history search
 bindkey '^P' history-beginning-search-backward-end
@@ -149,7 +151,7 @@ bindkey '^N' history-beginning-search-forward-end
 # make forward delete work
 bindkey '\033[3~' delete-char
 
-REPORTTIME=10
+export REPORTTIME=10
 
 setopt INTERACTIVECOMMENTS # allow comments on command line
 
@@ -191,6 +193,7 @@ zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b|%F{cyan}%r%f'
 zstyle ':vcs_info:git*+set-message:*' hooks git-status
 # }}}
 
+# make substitutions work in prompt
 setopt prompt_subst
 PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
 if [[ $STY = '' && $SSH_TTY != '' ]] then
@@ -204,3 +207,5 @@ export VISUAL=vim
 export PAGER=less
 export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
 export CLICOLOR=1 # colourize ls
+export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
+alias v='vim ~/Desktop/log.txt'
