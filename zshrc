@@ -209,3 +209,35 @@ export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
 export CLICOLOR=1 # colourize ls
 export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
 alias v='vim ~/Desktop/log.txt'
+
+function chpwd_profile_default() {
+    [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
+    unset GIT_AUTHOR_EMAIL
+    unset GIT_COMMITTER_EMAIL
+}
+function chpwd_profile_edgeware() {
+    [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
+    export GIT_AUTHOR_EMAIL="joakim.bergman@edgeware.tv"
+    export GIT_COMMITTER_EMAIL="joakim.bergman@edgeware.tv"
+}
+
+if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5->* ]] ; then
+
+  CHPWD_PROFILE='default'
+  function chpwd_profiles()
+  {
+    local -x profile
+
+    zstyle -s ":chpwd:profiles:${PWD}" profile profile || profile='default'
+    if (( ${+functions[chpwd_profile_$profile]} )) ; then
+      chpwd_profile_${profile}
+    fi
+
+    CHPWD_PROFILE="${profile}"
+    return 0
+  }
+  chpwd_functions=( ${chpwd_functions} chpwd_profiles )
+
+fi
+
+zstyle ':chpwd:profiles:/Users/jocke/edgeware(|/|/*)' profile edgeware
