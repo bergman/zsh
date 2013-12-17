@@ -151,6 +151,9 @@ bindkey '^N' history-beginning-search-forward-end
 # make forward delete work
 bindkey '\033[3~' delete-char
 
+# bash-style backward search
+bindkey '^R' history-incremental-pattern-search-backward
+
 export REPORTTIME=10
 
 setopt INTERACTIVECOMMENTS # allow comments on command line
@@ -182,7 +185,8 @@ autoload -Uz vcs_info
 # Add hook for calling vcs_info before each command.
 add-zsh-hook precmd vcs_info
 
-# Set vcs_info parameters.
+# disable vcs_info under /Volumes
+zstyle ':vcs_info:*' disable-patterns "/Volumes(|/*)"
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' stagedstr '%F{green}'
@@ -208,7 +212,9 @@ export PAGER=less
 export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
 export CLICOLOR=1 # colourize ls
 export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
-alias v='vim ~/Desktop/log.txt'
+
+alias v='vim ~/Documents/log.txt'
+alias vm='python ~/edgeware/vmtool/vmtool.py'
 
 function chpwd_profile_default() {
     [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
