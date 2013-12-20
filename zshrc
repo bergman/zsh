@@ -215,6 +215,9 @@ export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
 
 alias v='vim ~/Documents/log.txt'
 alias vm='python ~/edgeware/vmtool/vmtool.py'
+function l() {
+    echo `date "+%Y-%m-%d %H.%M"` $* >> ~/Documents/log.txt
+}
 
 function chpwd_profile_default() {
     [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
