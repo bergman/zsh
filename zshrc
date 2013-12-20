@@ -200,7 +200,11 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-status
 # make substitutions work in prompt
 setopt prompt_subst
 PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
-if [[ $STY = '' && $SSH_TTY != '' ]] then
+if [[ ($TERM == 'screen' || $TERM == 'tmux') && $SSH_TTY != '' ]] then
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %m %{%F{yellow}%}%~%{%f%} '
+elif [[ $TERM == 'screen' || $TERM == 'tmux' ]] then
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %{%F{yellow}%}%~%{%f%} '
+elif [[ $SSH_TTY != '' ]] then
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
 fi
 RPROMPT='${vcs_info_msg_0_}'
