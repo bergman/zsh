@@ -202,7 +202,7 @@ setopt prompt_subst
 PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
 if [[ ($TERM == 'screen' || $TERM == 'tmux') && $SSH_TTY != '' ]] then
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %m %{%F{yellow}%}%~%{%f%} '
-elif [[ $TERM == 'screen' || $TERM == 'tmux' ]] then
+elif [[ $TERM == 'screen' || $TERM == 'tmux' || $TMUX != '' ]] then
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %{%F{yellow}%}%~%{%f%} '
 elif [[ $SSH_TTY != '' ]] then
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
@@ -254,3 +254,5 @@ if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5
 fi
 
 zstyle ':chpwd:profiles:/Users/jocke/edgeware(|/|/*)' profile edgeware
+
+. ~/.zsh/base16-tomorrow.dark.sh
