@@ -253,6 +253,6 @@ if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5
 
 fi
 
-zstyle ':chpwd:profiles:/Users/jocke/edgeware(|/|/*)' profile edgeware
+zstyle ':chpwd:profiles:*edgeware(|/|/*)' profile edgeware
 
 . ~/.zsh/base16-tomorrow.dark.sh
