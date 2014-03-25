@@ -219,6 +219,7 @@ export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
 
 alias v='vim ~/Documents/log.txt'
 alias vm='python ~/edgeware/vmtool/vmtool.py'
+alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 function l() {
     echo `date "+%Y-%m-%d %H.%M"` $* >> ~/Documents/log.txt
 }
