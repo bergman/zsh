@@ -155,6 +155,7 @@ bindkey '\033[3~' delete-char
 bindkey '^R' history-incremental-pattern-search-backward
 
 export REPORTTIME=10
+REPORTTIME=10
 
 setopt AUTO_PUSHD
 setopt PUSHDSILENT
@@ -162,8 +163,8 @@ setopt PUSHDMINUS
 setopt INTERACTIVECOMMENTS # allow comments on command line
 
 HISTFILE=~/.zhistory
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 
 setopt HIST_EXPIRE_DUPS_FIRST # Expire a duplicate event first when trimming history.
 setopt HIST_FIND_NO_DUPS      # Do not display a previously found event.
