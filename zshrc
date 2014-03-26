@@ -156,6 +156,9 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 export REPORTTIME=10
 
+setopt AUTO_PUSHD
+setopt PUSHDSILENT
+setopt PUSHDMINUS
 setopt INTERACTIVECOMMENTS # allow comments on command line
 
 HISTFILE=~/.zhistory
@@ -172,7 +175,7 @@ setopt HIST_VERIFY            # Do not execute immediately upon history expansio
 setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY          # Share history between all sessions.
 
-setopt COMBINING_CHARS
+setopt COMBINING_CHARS # Combine zero-length punctuation characters (accents) with the base character.
 
 # vcs_info {{{
 autoload -Uz vcs_info
@@ -197,15 +200,17 @@ zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b|%F{cyan}%r%f'
 zstyle ':vcs_info:git*+set-message:*' hooks git-status
 # }}}
 
-# make substitutions work in prompt
-setopt prompt_subst
-PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
-if [[ ($TERM == 'screen' || $TERM == 'tmux') && $SSH_TTY != '' ]] then
-  PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %m %{%F{yellow}%}%~%{%f%} '
-elif [[ $TERM == 'screen' || $TERM == 'tmux' || $TMUX != '' ]] then
-  PROMPT='%(?..%{%F{red}%}%?%{%f%} )[mux] %{%F{yellow}%}%~%{%f%} '
-elif [[ $SSH_TTY != '' ]] then
+setopt prompt_subst # make substitutions work in prompt
+
+if [[ $TERM == 'screen' || -n $TMUX ]] then
+  # [$HOSTNAME] $PWD
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
+elif [[ -n $SSH_TTY ]] then
+  # $HOSTNAME $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
+else
+  # $PWD
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
 fi
 RPROMPT='${vcs_info_msg_0_}'
 
