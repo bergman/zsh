@@ -158,8 +158,10 @@ export REPORTTIME=10
 REPORTTIME=10
 
 setopt AUTO_PUSHD
-setopt PUSHDSILENT
-setopt PUSHDMINUS
+setopt PUSHD_SILENT
+setopt PUSHD_MINUS
+setopt PUSHD_IGNORE_DUPS
+
 setopt INTERACTIVECOMMENTS # allow comments on command line
 
 HISTFILE=~/.zhistory
