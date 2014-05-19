@@ -123,7 +123,8 @@ export LESS_TERMCAP_so=$'\E[00;47;30m'   # Begins standout-mode.
 export LESS_TERMCAP_ue=$'\E[0m'          # Ends underline.
 export LESS_TERMCAP_us=$'\E[01;32m'      # Begins underline.
 
-export GREP_COLOR='37;45'
+export GREP_COLOR='30;41' # black on red
+export GREP_COLORS='ms=30;41:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36'
 export GREP_OPTIONS='--color=auto'
 # }}}
 
@@ -205,7 +206,10 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-status
 
 setopt prompt_subst # make substitutions work in prompt
 
-if [[ $TERM == 'screen' || -n $TMUX ]] then
+if [[ -n $TMUX ]] then
+  # $PWD
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
+elif [[ $TERM == 'screen' ]] then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
 elif [[ -n $SSH_TTY ]] then
