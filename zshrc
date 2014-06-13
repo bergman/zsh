@@ -5,7 +5,7 @@ fi
 
 # completions {{{
 # Add zsh-completions to $fpath.
-fpath=(~/.zsh/completions/src $fpath)
+fpath=(/usr/local/share/zsh-completions $fpath)
 
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit
