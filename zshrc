@@ -268,3 +268,7 @@ fi
 zstyle ':chpwd:profiles:*edgeware(|/|/*)' profile edgeware
 
 . ~/.zsh/base16-tomorrow.dark.sh
+
+if [[ -f ~/.zshrc.local ]]; then
+  . ~/.zshrc.local
+fi
