@@ -206,13 +206,13 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-status
 
 setopt prompt_subst # make substitutions work in prompt
 
-if [[ -n $TMUX ]] then
+if [[ -n $TMUX ]]; then
   # $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
-elif [[ $TERM == 'screen' ]] then
+elif [[ $TERM == 'screen' ]]; then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
-elif [[ -n $SSH_TTY ]] then
+elif [[ -n $SSH_TTY ]]; then
   # $HOSTNAME $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
 else
@@ -236,18 +236,22 @@ function l() {
 }
 
 function chpwd_profile_default() {
-    [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
-    unset GIT_AUTHOR_EMAIL
-    unset GIT_COMMITTER_EMAIL
+  if [[ ${profile} == ${CHPWD_PROFILE} ]]; then
+    return 1
+  fi
+  unset GIT_AUTHOR_EMAIL
+  unset GIT_COMMITTER_EMAIL
 }
+
 function chpwd_profile_edgeware() {
-    [[ ${profile} == ${CHPWD_PROFILE} ]] && return 1
-    export GIT_AUTHOR_EMAIL="joakim.bergman@edgeware.tv"
-    export GIT_COMMITTER_EMAIL="joakim.bergman@edgeware.tv"
+  if [[ ${profile} == ${CHPWD_PROFILE} ]]; then
+    return 1
+  fi
+  export GIT_AUTHOR_EMAIL="joakim.bergman@edgeware.tv"
+  export GIT_COMMITTER_EMAIL="joakim.bergman@edgeware.tv"
 }
 
-if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5->* ]] ; then
-
+if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5->* ]]; then
   CHPWD_PROFILE='default'
   function chpwd_profiles()
   {
