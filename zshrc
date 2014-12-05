@@ -1,5 +1,5 @@
 # vim: fdm=marker:
-if [[ "$TERM" == 'dumb' ]]; then
+if [[ "$TERM" == dumb ]]; then
   return 1
 fi
 
@@ -115,6 +115,9 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # }}}
 
 # colours {{{
+# https://github.com/chriskempson/base16-shell
+. ~/.zsh/base16-tomorrow.dark.sh
+
 export LESS_TERMCAP_mb=$'\E[01;31m'      # Begins blinking.
 export LESS_TERMCAP_md=$'\E[01;31m'      # Begins bold.
 export LESS_TERMCAP_me=$'\E[0m'          # Ends mode.
@@ -141,13 +144,9 @@ zle -N history-beginning-search-forward-end history-search-end
 # vim style keybindings
 bindkey -v
 
-# pil upp, ned
+# arrow keys prefix search
 bindkey '\e[A' history-beginning-search-backward-end
 bindkey '\e[B' history-beginning-search-forward-end
-
-# vim style history search
-bindkey '^P' history-beginning-search-backward-end
-bindkey '^N' history-beginning-search-forward-end
 
 # make forward delete work
 bindkey '\033[3~' delete-char
@@ -155,8 +154,8 @@ bindkey '\033[3~' delete-char
 # bash-style backward search
 bindkey '^R' history-incremental-pattern-search-backward
 
-export REPORTTIME=10
 REPORTTIME=10
+export REPORTTIME=10
 
 setopt AUTO_PUSHD
 setopt PUSHD_SILENT
@@ -164,7 +163,9 @@ setopt PUSHD_MINUS
 setopt PUSHD_IGNORE_DUPS
 
 setopt INTERACTIVECOMMENTS # allow comments on command line
+setopt COMBINING_CHARS # Combine zero-length punctuation characters (accents) with the base character.
 
+# history {{{
 HISTFILE=~/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000
@@ -178,32 +179,9 @@ setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history fi
 setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
 setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY          # Share history between all sessions.
-
-setopt COMBINING_CHARS # Combine zero-length punctuation characters (accents) with the base character.
-
-# vcs_info {{{
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-
-# Load required functions.
-autoload -Uz add-zsh-hook
-autoload -Uz vcs_info
-
-# Add hook for calling vcs_info before each command.
-add-zsh-hook precmd vcs_info
-
-# disable vcs_info under /Volumes
-zstyle ':vcs_info:*' disable-patterns "/Volumes(|/*)"
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' stagedstr '%F{green}'
-zstyle ':vcs_info:*' unstagedstr '%F{red}'
-zstyle ':vcs_info:*' formats '%c%u%b%f'
-zstyle ':vcs_info:*' actionformats "%b%c%u|%F{cyan}%a%f"
-zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b|%F{cyan}%r%f'
-zstyle ':vcs_info:git*+set-message:*' hooks git-status
 # }}}
 
+# prompt {{{
 setopt prompt_subst # make substitutions work in prompt
 
 if [[ -n $TMUX ]]; then
@@ -219,36 +197,30 @@ else
   # $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
 fi
-RPROMPT='${vcs_info_msg_0_}'
+# }}}
 
-# environment variables only relevant to interactive shells
-export EDITOR=vim
-export VISUAL=vim
-export PAGER=less
-export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
-export CLICOLOR=1 # colourize ls
-export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
-
+# aliases {{{
 alias v='vim ~/Documents/log.txt'
+
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 function l() {
     echo `date "+%Y-%m-%d %H.%M"` $* >> ~/Documents/log.txt
 }
+# }}}
 
+# git profiles {{{
 function chpwd_profile_default() {
   if [[ ${profile} == ${CHPWD_PROFILE} ]]; then
     return 1
   fi
-  unset GIT_AUTHOR_EMAIL
-  unset GIT_COMMITTER_EMAIL
+  unset GIT_AUTHOR_EMAIL GIT_COMMITTER_EMAIL
 }
 
 function chpwd_profile_edgeware() {
   if [[ ${profile} == ${CHPWD_PROFILE} ]]; then
     return 1
   fi
-  export GIT_AUTHOR_EMAIL="joakim.bergman@edgeware.tv"
-  export GIT_COMMITTER_EMAIL="joakim.bergman@edgeware.tv"
+  export GIT_AUTHOR_EMAIL=joakim.bergman@edgeware.tv GIT_COMMITTER_EMAIL=joakim.bergman@edgeware.tv
 }
 
 if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5->* ]]; then
@@ -258,21 +230,26 @@ if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5
     local -x profile
 
     zstyle -s ":chpwd:profiles:${PWD}" profile profile || profile='default'
-    if (( ${+functions[chpwd_profile_$profile]} )) ; then
+    if (( ${+functions[chpwd_profile_$profile]} )); then
       chpwd_profile_${profile}
     fi
 
     CHPWD_PROFILE="${profile}"
     return 0
   }
-  chpwd_functions=( ${chpwd_functions} chpwd_profiles )
-
+  chpwd_functions=(${chpwd_functions} chpwd_profiles)
 fi
 
 zstyle ':chpwd:profiles:*edgeware(|/|/*)' profile edgeware
+# }}}
 
-# https://raw.githubusercontent.com/chriskempson/base16-shell/master/base16-tomorrow.dark.sh
-. ~/.zsh/base16-tomorrow.dark.sh
+# environment variables only relevant to interactive shells
+export EDITOR=vim
+export VISUAL=$EDITOR
+export PAGER=less
+export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
+export CLICOLOR=1 # colourize ls
+export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
 
 if [[ -f ~/.zshrc.local ]]; then
   . ~/.zshrc.local
