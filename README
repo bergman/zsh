@@ -3,3 +3,6 @@
 cd
 ln -s .zsh/zshrc .zshrc
 ln -s .zsh/zshenv .zshenv
+
+cd .zsh
+curl -O https://raw.githubusercontent.com/chriskempson/base16-shell/master/base16-tomorrow.dark.sh
