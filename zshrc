@@ -198,12 +198,9 @@ else
 fi
 # }}}
 # aliases {{{
-alias v='vim ~/Documents/log.txt'
-
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
-function l() {
-    echo `date "+%Y-%m-%d %H.%M"` $* >> ~/Documents/log.txt
-}
+alias v='vim ~/Documents/log.txt'
+alias l='>> ~/Documents/log.txt echo $(date "+%Y-%m-%d %H.%M")'
 # }}}
 # git profiles {{{
 function chpwd_profile_default() {
@@ -236,11 +233,11 @@ if [[ $ZSH_VERSION == 4.3.<3->* || $ZSH_VERSION == 4.<4->* || $ZSH_VERSION == <5
   }
   chpwd_functions=(${chpwd_functions} chpwd_profiles)
 fi
-
 zstyle ':chpwd:profiles:*edgeware(|/|/*)' profile edgeware
 # }}}
 
 if [[ -f ~/.zshrc.local ]]; then
   . ~/.zshrc.local
 fi
+
 # vim: fdm=marker:
