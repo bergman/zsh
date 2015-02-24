@@ -185,7 +185,7 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 # make substitutions work in prompt
 setopt prompt_subst
 
-RPROMPT="%F{201}-_-%f %*"
+RPROMPT="%F{201}-_-%f %D{%H.%M.%S}"
 if [[ $TERM == 'screen' ]]; then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
