@@ -182,11 +182,10 @@ setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when 
 setopt SHARE_HISTORY          # Share history between all sessions.
 # }}}
 # prompt {{{
-setopt prompt_subst # make substitutions work in prompt
+# make substitutions work in prompt
+setopt prompt_subst
 
-precmd() {
-  print -rP "%F{201}-_-%f %* %(?..%{%F{red}%}%?%{%f%})"
-}
+RPROMPT="%F{201}-_-%f %*"
 if [[ $TERM == 'screen' ]]; then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
@@ -195,7 +194,7 @@ elif [[ -n $SSH_TTY && -z $TMUX ]]; then
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
 else
   # $PWD
-  PROMPT='%{%F{yellow}%}%~%{%f%} '
+  PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
 fi
 # }}}
 # aliases {{{
