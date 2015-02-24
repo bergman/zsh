@@ -1,4 +1,3 @@
-# vim: fdm=marker:
 if [[ "$TERM" == dumb ]]; then
   return 1
 fi
@@ -10,20 +9,12 @@ fpath=(/usr/local/share/zsh-completions $fpath)
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit
 
-#
-# Options
-#
-
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
 setopt PATH_DIRS           # Perform path search even on command names with slashes.
 setopt AUTO_MENU           # Show completion menu on a succesive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
-
-#
-# Styles
-#
 
 # Use caching to make completion for cammands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
@@ -66,7 +57,7 @@ zstyle ':completion:*:history-words' remove-all-dups yes
 zstyle ':completion:*:history-words' list false
 zstyle ':completion:*:history-words' menu yes
 
-# Environmental Variables
+# Environment Variables
 #zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
 # Populate hostname completion.
@@ -113,11 +104,21 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 # }}}
+# environment variables for interactive shells {{{
 
-# colours {{{
+# fix colors in terminal
 # https://github.com/chriskempson/base16-shell
-. ~/.zsh/base16-tomorrow.dark.sh
+if [[ -f ~/.zsh/base16-tomorrow.dark.sh ]]; then
+  . ~/.zsh/base16-tomorrow.dark.sh
+fi
 
+export CLICOLOR=1 # for ls
+export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
+export EDITOR=vim
+export GREP_COLOR='30;41' # black on red
+export GREP_COLORS='ms=30;41:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36'
+export GREP_OPTIONS='--color=auto'
+export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
 export LESS_TERMCAP_mb=$'\E[01;31m'      # Begins blinking.
 export LESS_TERMCAP_md=$'\E[01;31m'      # Begins bold.
 export LESS_TERMCAP_me=$'\E[0m'          # Ends mode.
@@ -125,24 +126,16 @@ export LESS_TERMCAP_se=$'\E[0m'          # Ends standout-mode.
 export LESS_TERMCAP_so=$'\E[00;47;30m'   # Begins standout-mode.
 export LESS_TERMCAP_ue=$'\E[0m'          # Ends underline.
 export LESS_TERMCAP_us=$'\E[01;32m'      # Begins underline.
-
-export GREP_COLOR='30;41' # black on red
-export GREP_COLORS='ms=30;41:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36'
-export GREP_OPTIONS='--color=auto'
+export PAGER=less
+export VISUAL=$EDITOR
 # }}}
-
-# zmv, rename files
-autoload -U zmv
-
-# no delay when pressing ESC
-KEYTIMEOUT=1
+# key bindings {{{
+# vim style keybindings
+bindkey -v
 
 autoload -U history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
-
-# vim style keybindings
-bindkey -v
 
 # arrow keys prefix search
 bindkey '\e[A' history-beginning-search-backward-end
@@ -153,6 +146,13 @@ bindkey '\033[3~' delete-char
 
 # bash-style backward search
 bindkey '^R' history-incremental-pattern-search-backward
+# }}}
+# options {{{
+# zmv, rename files
+autoload -U zmv
+
+# no delay when pressing ESC
+KEYTIMEOUT=1
 
 REPORTTIME=10
 export REPORTTIME=10
@@ -165,6 +165,7 @@ setopt PUSHD_IGNORE_DUPS
 setopt INTERACTIVECOMMENTS # allow comments on command line
 setopt COMBINING_CHARS # Combine zero-length punctuation characters (accents) with the base character.
 
+# }}}
 # history {{{
 HISTFILE=~/.zhistory
 HISTSIZE=100000
@@ -180,25 +181,23 @@ setopt HIST_VERIFY            # Do not execute immediately upon history expansio
 setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY          # Share history between all sessions.
 # }}}
-
 # prompt {{{
 setopt prompt_subst # make substitutions work in prompt
 
-if [[ -n $TMUX ]]; then
-  # $PWD
-  PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
-elif [[ $TERM == 'screen' ]]; then
+precmd() {
+  print -rP "%F{201}-_-%f %* %(?..%{%F{red}%}%?%{%f%})"
+}
+if [[ $TERM == 'screen' ]]; then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
-elif [[ -n $SSH_TTY ]]; then
+elif [[ -n $SSH_TTY && -z $TMUX ]]; then
   # $HOSTNAME $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )%m %{%F{yellow}%}%~%{%f%} '
 else
   # $PWD
-  PROMPT='%(?..%{%F{red}%}%?%{%f%} )%{%F{yellow}%}%~%{%f%} '
+  PROMPT='%{%F{yellow}%}%~%{%f%} '
 fi
 # }}}
-
 # aliases {{{
 alias v='vim ~/Documents/log.txt'
 
@@ -207,7 +206,6 @@ function l() {
     echo `date "+%Y-%m-%d %H.%M"` $* >> ~/Documents/log.txt
 }
 # }}}
-
 # git profiles {{{
 function chpwd_profile_default() {
   if [[ ${profile} == ${CHPWD_PROFILE} ]]; then
@@ -243,14 +241,7 @@ fi
 zstyle ':chpwd:profiles:*edgeware(|/|/*)' profile edgeware
 # }}}
 
-# environment variables only relevant to interactive shells
-export EDITOR=vim
-export VISUAL=$EDITOR
-export PAGER=less
-export LESS='--quit-if-one-screen --no-init --RAW-CONTROL-CHARS'
-export CLICOLOR=1 # colourize ls
-export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
-
 if [[ -f ~/.zshrc.local ]]; then
   . ~/.zshrc.local
 fi
+# vim: fdm=marker:
