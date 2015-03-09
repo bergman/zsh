@@ -106,9 +106,9 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # }}}
 # environment variables for interactive shells {{{
 
-# fix colors in terminal
+# fix colors in terminal, but only for non-ssh and non-tmux
 # https://github.com/chriskempson/base16-shell
-if [[ -f ~/.zsh/base16-tomorrow.dark.sh ]]; then
+if [[ -z $SSH_TTY && -z $TMUX && -f ~/.zsh/base16-tomorrow.dark.sh ]]; then
   . ~/.zsh/base16-tomorrow.dark.sh
 fi
 
