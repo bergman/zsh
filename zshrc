@@ -105,7 +105,6 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 # }}}
 # environment variables for interactive shells {{{
-
 # fix colors in terminal, but only for non-ssh and non-tmux
 # https://github.com/chriskempson/base16-shell
 if [[ -z $SSH_TTY && -z $TMUX && -f ~/.zsh/base16-tomorrow.dark.sh ]]; then
@@ -185,7 +184,7 @@ setopt SHARE_HISTORY          # Share history between all sessions.
 # make substitutions work in prompt
 setopt prompt_subst
 
-RPROMPT="%F{19}-_-%f %F{166}%D{%H.%M.%S}%f"
+RPROMPT="%F{yellow}-_-%f %F{yellow}%D{%H.%M.%S}%f"
 if [[ $TERM == 'screen' ]]; then
   # [$HOSTNAME] $PWD
   PROMPT='%(?..%{%F{red}%}%?%{%f%} )[%m] %{%F{yellow}%}%~%{%f%} '
@@ -199,6 +198,7 @@ fi
 # }}}
 # aliases {{{
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
+alias colors2='for code ({000..255}) print -nP -- "%K{$code}  $code  %k"'
 alias v='vim ~/Documents/log.txt'
 alias l='>> ~/Documents/log.txt echo $(date "+%Y-%m-%d %H.%M")'
 # }}}
