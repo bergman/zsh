@@ -105,12 +105,6 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 # }}}
 # environment variables for interactive shells {{{
-# fix colors in terminal, but only for non-ssh and non-tmux
-# https://github.com/chriskempson/base16-shell
-if [[ -z $SSH_TTY && -z $TMUX && -f ~/.zsh/base16-tomorrow.dark.sh ]]; then
-  . ~/.zsh/base16-tomorrow.dark.sh
-fi
-
 export CLICOLOR=1 # for ls
 export CTAGS='--exclude=.git --python-kinds=-i --recurse=yes'
 export EDITOR=vim
